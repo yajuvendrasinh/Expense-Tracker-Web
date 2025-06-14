@@ -585,4 +585,46 @@ body {
         min-width: 35px;
         height: 35px;
     }
+}
+
+/* Save Button */
+.save-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.save-btn {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.save-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+.save-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 } 
