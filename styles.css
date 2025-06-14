@@ -258,7 +258,7 @@ body {
     background: #fff;
     border-radius: 20px;
     width: 100%;
-    max-width: 400px;
+    max-width: 320px;
     max-height: 80vh;
     overflow: hidden;
     display: flex;
@@ -269,7 +269,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-bottom: 1px solid #eee;
 }
 
@@ -303,7 +303,7 @@ body {
 }
 
 .modal-body {
-    padding: 20px 25px;
+    padding: 10px 15px;
     overflow-y: auto;
 }
 
@@ -418,7 +418,7 @@ body {
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 4px;
 }
 
 .calendar-header {
@@ -437,13 +437,13 @@ body {
 .calendar-day {
     background: transparent;
     border: none;
-    padding: 14px 8px;
-    border-radius: 10px;
+    padding: 8px 4px;
+    border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    min-height: 40px;
+    min-height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -460,6 +460,38 @@ body {
 
 .calendar-day.other-month {
     opacity: 0.3;
+}
+
+/* Weekend highlighting - Sunday (1st column) and Saturday (7th column) */
+.calendar-day:nth-child(7n+1) {
+    background-color: #fff3f3;
+    color: #d63384;
+}
+
+.calendar-day:nth-child(7n) {
+    background-color: #fff3f3;
+    color: #d63384;
+}
+
+.calendar-day:nth-child(7n+1):hover {
+    background-color: #ffe6e6;
+}
+
+.calendar-day:nth-child(7n):hover {
+    background-color: #ffe6e6;
+}
+
+.calendar-day:nth-child(7n+1).active,
+.calendar-day:nth-child(7n).active {
+    background: #d63384;
+    color: #fff;
+}
+
+/* Weekend day headers */
+.calendar-day-header:nth-child(1),
+.calendar-day-header:nth-child(7) {
+    color: #d63384;
+    font-weight: 700;
 }
 
 .nav-btn {
@@ -492,6 +524,20 @@ body {
     .container {
         padding: 20px 15px;
         border-radius: 15px;
+    }
+    
+    .modal-content {
+        max-width: 300px;
+    }
+    
+    .modal-header, .modal-body {
+        padding: 10px 12px;
+    }
+    
+    .calendar-day {
+        padding: 6px 2px;
+        min-height: 28px;
+        font-size: 13px;
     }
     
     .amount-container {
