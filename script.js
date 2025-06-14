@@ -293,17 +293,13 @@ function showCalendarModal() {
     const calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
     
-    // Update modal header with month/year
-    const modalHeader = document.querySelector('#calendarModal .modal-header h3');
-    modalHeader.textContent = selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    // Update modal header with navigation and month/year
+    const modalHeader = document.querySelector('#calendarModal .modal-header');
+    modalHeader.innerHTML = '';
     
-    const today = new Date();
-    const currentMonth = selectedDate.getMonth();
-    const currentYear = selectedDate.getFullYear();
-    
-    // Create navigation arrows only
-    const navigationContainer = document.createElement('div');
-    navigationContainer.className = 'calendar-navigation';
+    // Create header with navigation
+    const headerContent = document.createElement('div');
+    headerContent.className = 'modal-header-content';
     
     const prevBtn = document.createElement('button');
     prevBtn.className = 'nav-btn nav-prev';
@@ -313,6 +309,9 @@ function showCalendarModal() {
         showCalendarModal();
     });
     
+    const title = document.createElement('h3');
+    title.textContent = selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
     const nextBtn = document.createElement('button');
     nextBtn.className = 'nav-btn nav-next';
     nextBtn.innerHTML = '›';
@@ -321,9 +320,22 @@ function showCalendarModal() {
         showCalendarModal();
     });
     
-    navigationContainer.appendChild(prevBtn);
-    navigationContainer.appendChild(nextBtn);
-    calendar.appendChild(navigationContainer);
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-btn';
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', () => {
+        closeAllModals();
+    });
+    
+    headerContent.appendChild(prevBtn);
+    headerContent.appendChild(title);
+    headerContent.appendChild(nextBtn);
+    modalHeader.appendChild(headerContent);
+    modalHeader.appendChild(closeBtn);
+    
+    const today = new Date();
+    const currentMonth = selectedDate.getMonth();
+    const currentYear = selectedDate.getFullYear();
     
     // Create calendar grid
     const calendarGrid = document.createElement('div');
