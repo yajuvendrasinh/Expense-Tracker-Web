@@ -341,8 +341,8 @@ function showCalendarModal() {
     const calendarGrid = document.createElement('div');
     calendarGrid.className = 'calendar';
     
-    // Day headers
-    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // Day headers - start with Monday
+    const dayHeaders = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     dayHeaders.forEach(day => {
         const header = document.createElement('div');
         header.className = 'calendar-day-header';
@@ -351,7 +351,10 @@ function showCalendarModal() {
     });
     
     // Get first day of month and number of days
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    let firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    // Adjust for Monday start (0=Sunday becomes 6, 1=Monday becomes 0, etc.)
+    firstDay = firstDay === 0 ? 6 : firstDay - 1;
+    
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
     

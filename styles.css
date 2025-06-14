@@ -462,36 +462,36 @@ body {
     opacity: 0.3;
 }
 
-/* Weekend highlighting - Sunday (1st column) and Saturday (7th column) */
-.calendar-day:nth-child(7n+1) {
-    background-color: #fff3f3;
-    color: #d63384;
+/* Weekend highlighting - Saturday (6th column) and Sunday (7th column) */
+.calendar-day:nth-child(7n+6) {
+    background-color: #f8f9fa;
+    color: #666;
 }
 
 .calendar-day:nth-child(7n) {
-    background-color: #fff3f3;
-    color: #d63384;
+    background-color: #f8f9fa;
+    color: #666;
 }
 
-.calendar-day:nth-child(7n+1):hover {
-    background-color: #ffe6e6;
+.calendar-day:nth-child(7n+6):hover {
+    background-color: #e9ecef;
 }
 
 .calendar-day:nth-child(7n):hover {
-    background-color: #ffe6e6;
+    background-color: #e9ecef;
 }
 
-.calendar-day:nth-child(7n+1).active,
+.calendar-day:nth-child(7n+6).active,
 .calendar-day:nth-child(7n).active {
-    background: #d63384;
+    background: #000;
     color: #fff;
 }
 
 /* Weekend day headers */
-.calendar-day-header:nth-child(1),
+.calendar-day-header:nth-child(6),
 .calendar-day-header:nth-child(7) {
-    color: #d63384;
-    font-weight: 700;
+    color: #666;
+    font-weight: 600;
 }
 
 .nav-btn {
