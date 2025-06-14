@@ -293,27 +293,20 @@ function showCalendarModal() {
     const calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
     
+    // Update modal header with month/year
+    const modalHeader = document.querySelector('#calendarModal .modal-header h3');
+    modalHeader.textContent = selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
     const today = new Date();
     const currentMonth = selectedDate.getMonth();
     const currentYear = selectedDate.getFullYear();
     
-    // Create month/year title at top
-    const titleContainer = document.createElement('div');
-    titleContainer.className = 'calendar-title-container';
-    
-    const title = document.createElement('div');
-    title.className = 'calendar-title';
-    title.textContent = selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    
-    titleContainer.appendChild(title);
-    calendar.appendChild(titleContainer);
-    
-    // Create navigation arrows
-    const navigation = document.createElement('div');
-    navigation.className = 'calendar-navigation';
+    // Create navigation arrows only
+    const navigationContainer = document.createElement('div');
+    navigationContainer.className = 'calendar-navigation';
     
     const prevBtn = document.createElement('button');
-    prevBtn.className = 'nav-btn';
+    prevBtn.className = 'nav-btn nav-prev';
     prevBtn.innerHTML = '‹';
     prevBtn.addEventListener('click', () => {
         selectedDate.setMonth(selectedDate.getMonth() - 1);
@@ -321,16 +314,16 @@ function showCalendarModal() {
     });
     
     const nextBtn = document.createElement('button');
-    nextBtn.className = 'nav-btn';
+    nextBtn.className = 'nav-btn nav-next';
     nextBtn.innerHTML = '›';
     nextBtn.addEventListener('click', () => {
         selectedDate.setMonth(selectedDate.getMonth() + 1);
         showCalendarModal();
     });
     
-    navigation.appendChild(prevBtn);
-    navigation.appendChild(nextBtn);
-    calendar.appendChild(navigation);
+    navigationContainer.appendChild(prevBtn);
+    navigationContainer.appendChild(nextBtn);
+    calendar.appendChild(navigationContainer);
     
     // Create calendar grid
     const calendarGrid = document.createElement('div');

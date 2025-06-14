@@ -451,23 +451,12 @@ body {
     opacity: 0.3;
 }
 
-.calendar-title-container {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.calendar-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-}
-
 .calendar-navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    position: relative;
+    padding: 0;
 }
 
 .nav-btn {
@@ -527,8 +516,8 @@ body {
         font-size: 20px;
     }
     
-    .calendar-title {
-        font-size: 16px;
+    .calendar-navigation {
+        margin-bottom: 15px;
     }
     
     .nav-btn {
