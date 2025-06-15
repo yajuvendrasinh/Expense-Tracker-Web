@@ -117,6 +117,12 @@ function initializeEventListeners() {
         showCalendarModal();
     });
 
+    // Save button
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.addEventListener('click', () => {
+        saveCurrentExpense();
+    });
+
     // Close modal buttons
     document.querySelectorAll('.close-btn').forEach(btn => {
         btn.addEventListener('click', () => {

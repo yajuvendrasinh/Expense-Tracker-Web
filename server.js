@@ -1,7 +1,7 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 const app = express();
@@ -12,47 +12,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('./')); // Serve static files from current directory
 
-// MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/expense-tracker';
+// Supabase Configuration
+const supabaseUrl = 'https://qrlqxlodzbtiuruwzryc.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFybHF4bG9kemJ0aXVydXd6cnljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5Nzg2MzAsImV4cCI6MjA2NTU1NDYzMH0.4TDgQ9_L7Co4mmBS50LrfStEMnPVnENkCiDm0BXQRIQ';
 
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('✅ Connected to MongoDB'))
-.catch((error) => console.error('❌ MongoDB connection error:', error));
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Expense Schema
-const expenseSchema = new mongoose.Schema({
-    type: {
-        type: String,
-        enum: ['expenses', 'analysis'],
-        default: 'expenses'
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    amount: {
-        type: Number,
-        required: true,
-        min: 0
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    subcategory: {
-        type: String,
-        default: ''
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-const Expense = mongoose.model('Expense', expenseSchema);
+console.log('✅ Supabase client initialized');
 
 // Routes
 
@@ -61,19 +27,20 @@ app.get('/api/expenses', async (req, res) => {
     try {
         const { type, startDate, endDate, category } = req.query;
         
-        let filter = {};
-        if (type) filter.type = type;
-        if (category) filter.category = category;
+        let query = supabase.from('expenses').select('*');
+        
+        if (type) query = query.eq('type', type);
+        if (category) query = query.eq('category', category);
         if (startDate && endDate) {
-            filter.date = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
-            };
+            query = query.gte('date', startDate).lte('date', endDate);
         }
         
-        const expenses = await Expense.find(filter).sort({ date: -1 });
-        res.json(expenses);
+        const { data, error } = await query.order('date', { ascending: false });
+        
+        if (error) throw error;
+        res.json(data || []);
     } catch (error) {
+        console.error('Error fetching expenses:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -81,20 +48,33 @@ app.get('/api/expenses', async (req, res) => {
 // Create new expense
 app.post('/api/expenses', async (req, res) => {
     try {
-        const { type, date, amount, category, subcategory } = req.body;
+        const { type = 'expenses', date, amount, category, subcategory = '' } = req.body;
         
-        const expense = new Expense({
+        const expenseData = {
             type,
-            date: new Date(date),
+            date: new Date(date).toISOString(),
             amount: parseFloat(amount),
             category,
-            subcategory
-        });
+            subcategory,
+            created_at: new Date().toISOString()
+        };
         
-        const savedExpense = await expense.save();
-        res.status(201).json(savedExpense);
+        const { data, error } = await supabase
+            .from('expenses')
+            .insert([expenseData])
+            .select();
+        
+        if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+        }
+        
+        console.log('Expense saved successfully:', data[0]);
+        res.status(201).json(data[0]);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Error creating expense:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        res.status(400).json({ error: error.message || 'Unknown error occurred', details: error });
     }
 });
 
@@ -104,13 +84,21 @@ app.put('/api/expenses/:id', async (req, res) => {
         const { id } = req.params;
         const updates = req.body;
         
-        const expense = await Expense.findByIdAndUpdate(id, updates, { new: true });
-        if (!expense) {
+        const { data, error } = await supabase
+            .from('expenses')
+            .update(updates)
+            .eq('id', id)
+            .select();
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
             return res.status(404).json({ error: 'Expense not found' });
         }
         
-        res.json(expense);
+        res.json(data[0]);
     } catch (error) {
+        console.error('Error updating expense:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -120,13 +108,21 @@ app.delete('/api/expenses/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        const expense = await Expense.findByIdAndDelete(id);
-        if (!expense) {
+        const { data, error } = await supabase
+            .from('expenses')
+            .delete()
+            .eq('id', id)
+            .select();
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
             return res.status(404).json({ error: 'Expense not found' });
         }
         
         res.json({ message: 'Expense deleted successfully' });
     } catch (error) {
+        console.error('Error deleting expense:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -136,37 +132,49 @@ app.get('/api/analytics/summary', async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
         
-        let matchFilter = { type: 'expenses' };
+        let query = supabase.from('expenses').select('*').eq('type', 'expenses');
+        
         if (startDate && endDate) {
-            matchFilter.date = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
-            };
+            query = query.gte('date', startDate).lte('date', endDate);
         }
         
-        const summary = await Expense.aggregate([
-            { $match: matchFilter },
-            {
-                $group: {
-                    _id: '$category',
-                    total: { $sum: '$amount' },
-                    count: { $sum: 1 },
-                    avgAmount: { $avg: '$amount' }
-                }
-            },
-            { $sort: { total: -1 } }
-        ]);
+        const { data, error } = await query;
         
-        const totalExpenses = await Expense.aggregate([
-            { $match: matchFilter },
-            { $group: { _id: null, total: { $sum: '$amount' } } }
-        ]);
+        if (error) throw error;
+        
+        // Process data for analytics
+        const categoryBreakdown = {};
+        let totalAmount = 0;
+        
+        data.forEach(expense => {
+            totalAmount += expense.amount;
+            if (!categoryBreakdown[expense.category]) {
+                categoryBreakdown[expense.category] = {
+                    _id: expense.category,
+                    total: 0,
+                    count: 0,
+                    avgAmount: 0
+                };
+            }
+            categoryBreakdown[expense.category].total += expense.amount;
+            categoryBreakdown[expense.category].count += 1;
+        });
+        
+        // Calculate averages
+        Object.keys(categoryBreakdown).forEach(category => {
+            const cat = categoryBreakdown[category];
+            cat.avgAmount = cat.total / cat.count;
+        });
+        
+        // Convert to array and sort by total
+        const summary = Object.values(categoryBreakdown).sort((a, b) => b.total - a.total);
         
         res.json({
             categoryBreakdown: summary,
-            totalAmount: totalExpenses[0]?.total || 0
+            totalAmount
         });
     } catch (error) {
+        console.error('Error getting analytics summary:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -174,24 +182,46 @@ app.get('/api/analytics/summary', async (req, res) => {
 // Monthly trends
 app.get('/api/analytics/monthly', async (req, res) => {
     try {
-        const monthlyData = await Expense.aggregate([
-            { $match: { type: 'expenses' } },
-            {
-                $group: {
-                    _id: {
-                        year: { $year: '$date' },
-                        month: { $month: '$date' }
-                    },
-                    total: { $sum: '$amount' },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { '_id.year': -1, '_id.month': -1 } },
-            { $limit: 12 } // Last 12 months
-        ]);
+        const { data, error } = await supabase
+            .from('expenses')
+            .select('*')
+            .eq('type', 'expenses')
+            .order('date', { ascending: false });
         
-        res.json(monthlyData);
+        if (error) throw error;
+        
+        // Process data for monthly trends
+        const monthlyData = {};
+        
+        data.forEach(expense => {
+            const date = new Date(expense.date);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const key = `${year}-${month}`;
+            
+            if (!monthlyData[key]) {
+                monthlyData[key] = {
+                    _id: { year, month },
+                    total: 0,
+                    count: 0
+                };
+            }
+            
+            monthlyData[key].total += expense.amount;
+            monthlyData[key].count += 1;
+        });
+        
+        // Convert to array and sort, limit to 12 months
+        const sortedData = Object.values(monthlyData)
+            .sort((a, b) => {
+                if (a._id.year !== b._id.year) return b._id.year - a._id.year;
+                return b._id.month - a._id.month;
+            })
+            .slice(0, 12);
+        
+        res.json(sortedData);
     } catch (error) {
+        console.error('Error getting monthly trends:', error);
         res.status(500).json({ error: error.message });
     }
 });
