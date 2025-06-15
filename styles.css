@@ -212,9 +212,9 @@ body {
     background: #000;
     color: #fff;
     border: none;
-    padding: 16px 24px;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -269,7 +269,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 10px 15px;
     border-bottom: 1px solid #eee;
 }
 
@@ -303,7 +303,7 @@ body {
 }
 
 .modal-body {
-    padding: 10px 15px;
+    padding: 8px 12px;
     overflow-y: auto;
 }
 
@@ -418,7 +418,8 @@ body {
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+    gap: 3px;
+    padding: 0 3px;
 }
 
 .calendar-header {
@@ -426,7 +427,7 @@ body {
 }
 
 .calendar-day-header {
-    padding: 10px 5px;
+    padding: 8px 4px;
     text-align: center;
     font-size: 12px;
     font-weight: 600;
@@ -464,27 +465,34 @@ body {
 
 /* Weekend highlighting - Saturday (6th column) and Sunday (7th column) */
 .calendar-day:nth-child(7n+6) {
-    background-color: #f8f9fa;
+    background-color: #fafafa;
     color: #666;
+    font-weight: 500;
+    border: 1px solid #ddd;
 }
 
 .calendar-day:nth-child(7n) {
-    background-color: #f8f9fa;
+    background-color: #fafafa;
     color: #666;
+    font-weight: 500;
+    border: 1px solid #ddd;
 }
 
 .calendar-day:nth-child(7n+6):hover {
-    background-color: #e9ecef;
+    background-color: #f5f5f5;
+    border-color: #ccc;
 }
 
 .calendar-day:nth-child(7n):hover {
-    background-color: #e9ecef;
+    background-color: #f5f5f5;
+    border-color: #ccc;
 }
 
 .calendar-day:nth-child(7n+6).active,
 .calendar-day:nth-child(7n).active {
     background: #000;
     color: #fff;
+    border-color: #000;
 }
 
 /* Weekend day headers */
@@ -492,6 +500,61 @@ body {
 .calendar-day-header:nth-child(7) {
     color: #666;
     font-weight: 600;
+    background-color: #fafafa;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Calendar header actions */
+.calendar-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Calendar header main */
+.calendar-header-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+/* Today button */
+.today-btn {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #333;
+    font-family: inherit;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.today-btn:hover {
+    background: #e9ecef;
+    border-color: #bbb;
+    color: #000;
+}
+
+/* Today's date highlighting */
+.calendar-day.today {
+    border: 2px solid #000 !important;
+    font-weight: 600;
+}
+
+.calendar-day.today.active {
+    background: #000;
+    color: #fff;
+    border: 2px solid #000 !important;
 }
 
 .nav-btn {

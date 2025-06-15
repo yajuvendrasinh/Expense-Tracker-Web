@@ -1,13 +1,13 @@
-# Expense Tracker with MongoDB Integration
+# Expense Tracker with Supabase Integration
 
-A modern web application for tracking expenses with MongoDB database integration and analytics.
+A modern web application for tracking expenses with Supabase database integration and analytics.
 
 ## 🎯 Features
 
 - ✅ **Clean UI** - Modern expense entry interface
 - ✅ **Smart Date Selection** - Easy date navigation with calendar
 - ✅ **Category Management** - Organized expense categories and subcategories
-- ✅ **MongoDB Integration** - Persistent data storage
+- ✅ **Supabase Integration** - Persistent data storage with PostgreSQL
 - ✅ **Analytics Dashboard** - Expense insights and trends
 - ✅ **Responsive Design** - Works on desktop and mobile
 
@@ -16,9 +16,7 @@ A modern web application for tracking expenses with MongoDB database integration
 ### Prerequisites
 
 1. **Node.js** (v14 or higher) - [Download here](https://nodejs.org/)
-2. **MongoDB** - Choose one option:
-   - **Local MongoDB** - [Download here](https://www.mongodb.com/download-center/community)
-   - **MongoDB Atlas** (Cloud) - [Sign up here](https://www.mongodb.com/cloud/atlas)
+2. **Supabase Account** - [Sign up here](https://supabase.com/)
 
 ### Setup Instructions
 
@@ -38,22 +36,12 @@ npm install
 
 #### 3. Configure Database Connection
 
-**Option A: Local MongoDB**
-```bash
-# Create .env file in project root
-echo "MONGODB_URI=mongodb://localhost:27017/expense-tracker" > .env
-echo "PORT=3000" >> .env
-```
+The application is pre-configured with Supabase credentials. The database table will be automatically created if it doesn't exist.
 
-**Option B: MongoDB Atlas (Cloud)**
-1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Create a new cluster (free tier available)
-3. Get your connection string
-4. Create `.env` file:
+**Environment Variables (Optional):**
 ```bash
-# Replace with your actual connection string
-echo "MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/expense-tracker?retryWrites=true&w=majority" > .env
-echo "PORT=3000" >> .env
+# Create .env file in project root if you want to customize
+echo "PORT=3000" > .env
 ```
 
 #### 4. Start the Application
@@ -76,51 +64,41 @@ expense-tracker/
 ├── styles.css          # Application styling
 ├── script.js           # Frontend logic
 ├── api.js              # API integration
-├── server.js           # Express backend
+├── server.js           # Express backend with Supabase
 ├── package.json        # Dependencies
-├── .env                # Environment variables
+├── .env                # Environment variables (optional)
 └── README.md           # This file
 ```
 
 ## 🔧 Configuration
 
-### Environment Variables (.env)
+### Supabase Setup
 
-Create a `.env` file in the project root:
+The application uses Supabase (PostgreSQL) for data storage. The database configuration is:
 
-```env
-# Database Configuration
-MONGODB_URI=mongodb://localhost:27017/expense-tracker
+**Database URL:** `https://qrlqxlodzbtiuruwzryc.supabase.co`
 
-# Server Configuration
-PORT=3000
-
-# For MongoDB Atlas, use this format:
-# MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/expense-tracker?retryWrites=true&w=majority
+**Table Schema:**
+```sql
+CREATE TABLE public.expenses (
+    id BIGSERIAL PRIMARY KEY,
+    type VARCHAR(50) NOT NULL DEFAULT 'expenses',
+    date DATE NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    subcategory VARCHAR(100) DEFAULT '',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
 ```
 
-### MongoDB Atlas Setup (Detailed)
+### Environment Variables (.env)
 
-1. **Sign Up** at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. **Create Cluster**:
-   - Choose "Shared" (free tier)
-   - Select your preferred region
-   - Click "Create Cluster"
-3. **Database Access**:
-   - Go to "Database Access"
-   - Click "Add New Database User"
-   - Create username/password
-   - Set permissions to "Read and write to any database"
-4. **Network Access**:
-   - Go to "Network Access"
-   - Click "Add IP Address"
-   - Add `0.0.0.0/0` (allow all) or your specific IP
-5. **Get Connection String**:
-   - Go to "Clusters"
-   - Click "Connect"
-   - Choose "Connect your application"
-   - Copy the connection string
-   - Replace `<password>` with your actual password
+Create a `.env` file in the project root if you want to customize settings:
+
+```env
+# Server Configuration
+PORT=3000
+```
 
 ## 📊 API Endpoints
 
@@ -157,26 +135,21 @@ fetch('/api/expenses', {
 
 ### Common Issues
 
-#### 1. MongoDB Connection Error
-```
-Error: MongoNetworkError: failed to connect to server
-```
-**Solutions:**
-- Check if MongoDB is running locally
-- Verify connection string in `.env`
-- For Atlas: Check network access and credentials
-
-#### 2. Port Already in Use
+#### 1. Port Already in Use
 ```
 Error: listen EADDRINUSE :::3000
 ```
 **Solution:**
 ```bash
-# Change port in .env file
+# Kill the process using port 3000
+netstat -ano | findstr :3000
+taskkill /F /PID <process_id>
+
+# Or change port in .env file
 echo "PORT=3001" >> .env
 ```
 
-#### 3. Module Not Found
+#### 2. Module Not Found
 ```
 Error: Cannot find module 'express'
 ```
@@ -185,28 +158,25 @@ Error: Cannot find module 'express'
 npm install
 ```
 
-### Testing Database Connection
+#### 3. Database Connection Issues
+The application should automatically work with the configured Supabase instance. If you encounter issues:
 
-```bash
-# Test local MongoDB
-mongosh mongodb://localhost:27017/expense-tracker
-
-# Test Atlas connection
-mongosh "mongodb+srv://cluster0.xxxxx.mongodb.net/expense-tracker" --username <username>
-```
+1. Check if the server logs show "✅ Supabase client initialized"
+2. Verify the application can create test expenses
+3. Check browser console for any frontend errors
 
 ## 🔄 Data Schema
 
 ### Expense Document
 ```javascript
 {
-    _id: ObjectId,
+    id: number,
     type: "expenses" | "analysis",
-    date: Date,
-    amount: Number,
-    category: String,
-    subcategory: String,
-    createdAt: Date
+    date: string (ISO date),
+    amount: number,
+    category: string,
+    subcategory: string,
+    created_at: string (ISO datetime)
 }
 ```
 
@@ -225,24 +195,31 @@ mongosh "mongodb+srv://cluster0.xxxxx.mongodb.net/expense-tracker" --username <u
 
 ## 🚀 Development
 
+### Technology Stack
+- **Frontend**: Vanilla JavaScript with modern ES6+
+- **Backend**: Node.js with Express
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Custom CSS with responsive design
+
 ### Running in Development Mode
 ```bash
 npm run dev
 ```
 
 ### Key Features Implementation
-- **Frontend**: Vanilla JavaScript with modern ES6+
-- **Backend**: Node.js with Express
-- **Database**: MongoDB with Mongoose ODM
-- **Styling**: Custom CSS with responsive design
+- Real-time data persistence with Supabase
+- Clean black/white/gray design theme
+- Mobile-responsive interface
+- Weekend highlighting in calendar
+- Today button for quick date navigation
 
 ## 📝 Notes
 
-- Data persists in MongoDB database
+- Data persists in Supabase PostgreSQL database
 - Categories are predefined but can be extended
-- Weekend highlighting in calendar
-- Clean black/white/gray design theme
-- Mobile-responsive interface
+- Weekend dates have subtle highlighting in calendar
+- Clean UI with professional SVG icons
+- Compact calendar design with optimized spacing
 
 ## 🤝 Contributing
 
@@ -261,5 +238,5 @@ MIT License - feel free to use for personal or commercial projects.
 **Need Help?** 
 - Check the troubleshooting section above
 - Verify all dependencies are installed
-- Ensure MongoDB is running and accessible
+- Ensure the server is running on port 3000
 - Check browser console for errors 

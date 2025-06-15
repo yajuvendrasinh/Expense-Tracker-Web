@@ -299,13 +299,32 @@ function showCalendarModal() {
     const calendar = document.getElementById('calendar');
     calendar.innerHTML = '';
     
+    // Update Today button with current date
+    const today = new Date();
+    const todayBtn = document.getElementById('todayBtn');
+    todayBtn.textContent = today.getDate();
+    
+    // Add Today button click handler
+    todayBtn.onclick = () => {
+        selectedDate = new Date(today);
+        updateDateDisplay();
+        closeAllModals();
+    };
+    
     // Update modal header with navigation and month/year
     const modalHeader = document.querySelector('#calendarModal .modal-header');
-    modalHeader.innerHTML = '';
     
-    // Create header with navigation
-    const headerContent = document.createElement('div');
-    headerContent.className = 'modal-header-content';
+    // Find or create the header content for navigation
+    let headerContent = modalHeader.querySelector('.modal-header-content');
+    if (!headerContent) {
+        headerContent = document.createElement('div');
+        headerContent.className = 'modal-header-content';
+        // Insert after the calendar-header-main
+        const headerMain = modalHeader.querySelector('.calendar-header-main');
+        modalHeader.insertBefore(headerContent, headerMain.nextSibling);
+    } else {
+        headerContent.innerHTML = '';
+    }
     
     const prevBtn = document.createElement('button');
     prevBtn.className = 'nav-btn nav-prev';
@@ -326,20 +345,10 @@ function showCalendarModal() {
         showCalendarModal();
     });
     
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-btn';
-    closeBtn.innerHTML = '✕';
-    closeBtn.addEventListener('click', () => {
-        closeAllModals();
-    });
-    
     headerContent.appendChild(prevBtn);
     headerContent.appendChild(title);
     headerContent.appendChild(nextBtn);
-    modalHeader.appendChild(headerContent);
-    modalHeader.appendChild(closeBtn);
     
-    const today = new Date();
     const currentMonth = selectedDate.getMonth();
     const currentYear = selectedDate.getFullYear();
     
@@ -377,6 +386,13 @@ function showCalendarModal() {
         const dayBtn = document.createElement('button');
         dayBtn.className = 'calendar-day';
         dayBtn.textContent = day;
+        
+        // Check if this is today's date
+        if (day === today.getDate() && 
+            currentMonth === today.getMonth() && 
+            currentYear === today.getFullYear()) {
+            dayBtn.classList.add('today');
+        }
         
         // Check if this is the selected date
         if (day === selectedDate.getDate() && 
