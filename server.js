@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 app.use(express.static('./')); // Serve static files from current directory
 
 // Supabase Configuration
-const supabaseUrl = 'https://qrlqxlodzbtiuruwzryc.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFybHF4bG9kemJ0aXVydXd6cnljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5Nzg2MzAsImV4cCI6MjA2NTU1NDYzMH0.4TDgQ9_L7Co4mmBS50LrfStEMnPVnENkCiDm0BXQRIQ';
+const supabaseUrl = 'https://wozdvfnnyknyxhrukqlh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvemR2Zm5ueWtueXhocnVrcWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMDk4MDMsImV4cCI6MjA2NTU4NTgwM30.Ojp7VP6hrD7Vio_1faA3RGh6C1-EaFBANIaaijjm1T4';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -48,15 +48,26 @@ app.get('/api/expenses', async (req, res) => {
 // Create new expense
 app.post('/api/expenses', async (req, res) => {
     try {
-        const { type = 'expenses', date, amount, category, subcategory = '' } = req.body;
+        const { type = 'expenses', date, amount, category, subcategory = '', expense_name = '', remarks = '' } = req.body;
+        
+        // Calculate UTC and IST times
+        const now = new Date(); // Local system time
+        const createdAtUTC = now.toISOString(); // Store UTC time
+        
+        // Format the local time directly (assuming server is running in IST timezone)
+        const pad = n => n.toString().padStart(2, '0');
+        const createdAtIST = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         
         const expenseData = {
             type,
-            date: new Date(date).toISOString(),
+            date: new Date(date).toISOString().slice(0, 10), // YYYY-MM-DD for DATE column
             amount: parseFloat(amount),
             category,
             subcategory,
-            created_at: new Date().toISOString()
+            created_at: createdAtUTC,
+            created_at_ist: createdAtIST,
+            expense_name,
+            remarks
         };
         
         const { data, error } = await supabase

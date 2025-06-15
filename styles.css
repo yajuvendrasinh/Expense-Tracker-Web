@@ -128,7 +128,7 @@ body {
 .amount-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 4px 0 0 0;
     padding: 0 20px;
 }
 
@@ -136,12 +136,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
-    font-weight: 300;
+    font-size: 44px;
+    font-weight: 700;
     color: #333;
     position: relative;
     cursor: pointer;
-    padding: 15px 20px;
+    padding: 10px 16px;
     border-radius: 15px;
     transition: background-color 0.2s ease;
     width: 100%;
@@ -201,11 +201,49 @@ body {
     transform: scale(1.05);
 }
 
+/* Expense Name Input */
+.expense-name-container {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 8px 0;
+    padding: 0 16px;
+}
+.expense-name-input {
+    width: 100%;
+    max-width: 350px;
+    border: none;
+    border-bottom: 2px solid #e0e0e0;
+    background: transparent;
+    font-size: 16px;
+    color: #333;
+    padding: 6px 0 4px 0;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+.expense-name-input::placeholder {
+    color: #b0b0b0;
+    font-weight: 400;
+}
+.expense-name-input:focus {
+    border-bottom: 2px solid #888;
+    color: #222;
+}
+
+/* Add spacing below amount and above category */
+.amount-container + .expense-name-container {
+    margin-top: 0;
+}
+.expense-name-container + .category-container {
+    margin-top: 10px;
+}
+
 /* Category Section */
 .category-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 8px;
+    margin-top: 4px;
 }
 
 .category-btn {
@@ -258,7 +296,7 @@ body {
     background: #fff;
     border-radius: 20px;
     width: 100%;
-    max-width: 315px;
+    max-width: 285px;
     max-height: 80vh;
     overflow: hidden;
     display: flex;
@@ -267,17 +305,18 @@ body {
 
 .modal-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 8px 8px;
     border-bottom: 1px solid #eee;
+    gap: 0;
+    justify-content: flex-start;
+    position: relative;
 }
 
 .modal-header-content {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
+    gap: 6px;
     justify-content: center;
 }
 
@@ -286,16 +325,20 @@ body {
     font-weight: 600;
     margin: 0;
     min-width: 120px;
-    text-align: center;
+    text-align: left;
 }
 
 .close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     background: transparent;
     border: none;
     font-size: 24px;
     cursor: pointer;
     opacity: 0.5;
     transition: opacity 0.3s ease;
+    z-index: 2;
 }
 
 .close-btn:hover {
@@ -303,7 +346,7 @@ body {
 }
 
 .modal-body {
-    padding: 8px 12px;
+    padding: 6px 6px;
     overflow-y: auto;
 }
 
@@ -311,21 +354,24 @@ body {
 .category-list-item,
 .subcategory-list-item {
     background: #f8f9fa;
-    border: none;
-    padding: 15px 20px;
+    border: 1.5px solid #d1d5db;
+    padding: 10px 16px;
     margin-bottom: 10px;
     border-radius: 15px;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-family: inherit;
     width: 100%;
     text-align: left;
+    min-height: 32px;
+    box-sizing: border-box;
 }
 
 .category-list-item:hover,
 .subcategory-list-item:hover {
     background: #e9ecef;
+    border-color: #b0b0b0;
 }
 
 .category-list-item:last-child,
@@ -516,8 +562,7 @@ body {
 .calendar-header-main {
     display: flex;
     align-items: center;
-    gap: 6px;
-    flex: 1;
+    gap: 4px;
 }
 
 /* Today button */
@@ -654,7 +699,7 @@ body {
 .save-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 12px;
 }
 
 .save-btn {
@@ -690,4 +735,16 @@ body {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+@font-face {
+    font-family: 'Sinkin Sans';
+    src: url('./fonts/SinkinSans-300Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+body, html, .container, input, button, select, textarea {
+    font-family: 'Sinkin Sans', 'Inter', Arial, sans-serif !important;
+    font-weight: 300;
 } 

@@ -19,6 +19,7 @@ let selectedCategory = '';
 let selectedSubcategory = '';
 let currentAmount = '0.00';
 let currentType = 'expenses';
+let expenseName = '';
 
 // DOM Elements
 const dateList = document.getElementById('dateList');
@@ -27,6 +28,7 @@ const subcategoryBtn = document.getElementById('subcategoryBtn');
 const amountInput = document.getElementById('amountInput');
 const clearBtn = document.getElementById('clearBtn');
 const calendarBtn = document.getElementById('calendarBtn');
+const expenseNameInput = document.getElementById('expenseNameInput');
 
 // Modal Elements
 const categoryModal = document.getElementById('categoryModal');
@@ -141,6 +143,17 @@ function initializeEventListeners() {
 
     // Amount modal functionality
     initializeAmountModal();
+
+    // Expense Name input
+    expenseNameInput.addEventListener('input', (e) => {
+        expenseName = e.target.value;
+    });
+    expenseNameInput.addEventListener('focus', (e) => {
+        e.target.placeholder = '';
+    });
+    expenseNameInput.addEventListener('blur', (e) => {
+        if (!e.target.value) e.target.placeholder = 'expense name';
+    });
 }
 
 // Show category modal
@@ -470,6 +483,7 @@ function updateDisplay() {
     amountInput.value = formatAmountDisplay(currentAmount);
     categoryBtn.textContent = selectedCategory || 'Category';
     subcategoryBtn.textContent = selectedSubcategory || 'Sub Category';
+    expenseNameInput.value = expenseName;
     
     // Add visual feedback for selected items
     if (selectedCategory) {
@@ -498,7 +512,7 @@ function formatAmountDisplay(amount) {
     return amount;
 }
 
-// Export data (for future MongoDB integration)
+// Export data
 function getExpenseData() {
     return {
         type: currentType,
