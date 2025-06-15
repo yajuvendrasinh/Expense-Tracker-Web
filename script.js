@@ -522,4 +522,41 @@ function getExpenseData() {
         subcategory: selectedSubcategory,
         timestamp: new Date().toISOString()
     };
+}
+
+async function saveCurrentExpense() {
+    try {
+        // Validate required fields
+        if (!selectedCategory || !currentAmount || currentAmount === '0.00' || !expenseName.trim()) {
+            alert('Please fill in all required fields: Category, Amount, and Expense Name');
+            return false;
+        }
+        
+        // Prepare expense data
+        const expenseData = {
+            type: currentType,
+            date: selectedDate.toISOString().split('T')[0],
+            amount: parseFloat(currentAmount),
+            category: selectedCategory,
+            subcategory: selectedSubcategory || '',
+            expense_name: expenseName.trim()
+        };
+        
+        // Save to database
+        const savedExpense = await ExpenseAPI.saveExpense(expenseData);
+        
+        // Show success message
+        showNotification('💰 Expense saved successfully!', 'success');
+        
+        // Reset form
+        resetForm();
+        
+        console.log('Expense saved:', savedExpense);
+        return true;
+        
+    } catch (error) {
+        console.error('Failed to save expense:', error);
+        showNotification('❌ Failed to save expense. Please try again.', 'error');
+        return false;
+    }
 } 

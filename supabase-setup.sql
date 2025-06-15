@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.expenses (
     amount DECIMAL(10,2) NOT NULL,
     category VARCHAR(100) NOT NULL,
     subcategory VARCHAR(100) DEFAULT '',
-    expense_name VARCHAR(200) DEFAULT '',
+    expense_name VARCHAR(200) NOT NULL,
     remarks TEXT DEFAULT '',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     created_at_ist VARCHAR(50)

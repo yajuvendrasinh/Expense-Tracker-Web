@@ -53,6 +53,11 @@ app.post('/api/expenses', async (req, res) => {
     try {
         const { type = 'expenses', date, amount, category, subcategory = '', expense_name = '', remarks = '' } = req.body;
         
+        // Validate required fields
+        if (!expense_name || !expense_name.trim()) {
+            return res.status(400).json({ error: 'Expense name is required' });
+        }
+        
         // Calculate UTC and IST times
         const now = new Date(); // Local system time
         const createdAtUTC = now.toISOString(); // Store UTC time
@@ -69,7 +74,7 @@ app.post('/api/expenses', async (req, res) => {
             subcategory,
             created_at: createdAtUTC,
             created_at_ist: createdAtIST,
-            expense_name,
+            expense_name: expense_name.trim(),
             remarks
         };
         
