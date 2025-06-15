@@ -258,7 +258,7 @@ body {
     background: #fff;
     border-radius: 20px;
     width: 100%;
-    max-width: 320px;
+    max-width: 315px;
     max-height: 80vh;
     overflow: hidden;
     display: flex;
@@ -276,16 +276,16 @@ body {
 .modal-header-content {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
     flex: 1;
     justify-content: center;
 }
 
 .modal-header h3 {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     margin: 0;
-    min-width: 140px;
+    min-width: 120px;
     text-align: center;
 }
 
@@ -419,7 +419,7 @@ body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 3px;
-    padding: 0 3px;
+    padding: 0;
 }
 
 .calendar-header {
@@ -438,7 +438,7 @@ body {
 .calendar-day {
     background: transparent;
     border: none;
-    padding: 8px 4px;
+    padding: 8px 2px;
     border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
@@ -516,7 +516,7 @@ body {
 .calendar-header-main {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     flex: 1;
 }
 
@@ -562,12 +562,12 @@ body {
     border: none;
     font-size: 20px;
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 6px 8px;
     border-radius: 8px;
     transition: all 0.3s ease;
     color: #666;
-    min-width: 40px;
-    height: 40px;
+    min-width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
