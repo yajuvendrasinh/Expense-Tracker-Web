@@ -25,6 +25,12 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 console.log('✅ Supabase client initialized');
 console.log('Environment:', process.env.NODE_ENV || 'development');
 
+// Check for Supabase credentials
+if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL === 'https://wozdvfnnyknyxhrukqlh.supabase.co' ||
+    !process.env.SUPABASE_KEY || process.env.SUPABASE_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvemR2Zm5ueWtueXhocnVrcWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMDk4MDMsImV4cCI6MjA2NTU4NTgwM30.Ojp7VP6hrD7Vio_1faA3RGh6C1-EaFBANIaaijjm1T4') {
+    console.warn('⚠️ WARNING: Supabase credentials are not set in the environment or are using hardcoded fallbacks. For production, ensure SUPABASE_URL and SUPABASE_KEY are set in your deployment environment.');
+}
+
 // Routes
 
 // Get all expenses
