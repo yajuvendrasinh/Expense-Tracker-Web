@@ -186,6 +186,10 @@ function resetForm() {
     currentAmount = '0.00';
     selectedCategory = '';
     selectedSubcategory = '';
+    expenseName = '';
+    if (typeof expenseNameInput !== 'undefined') {
+        expenseNameInput.value = '';
+    }
     updateDisplay();
 }
 
