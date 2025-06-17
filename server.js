@@ -60,12 +60,14 @@ app.post('/api/expenses', async (req, res) => {
         }
         
         // Calculate UTC and IST times
-        const now = new Date(); // Local system time
+        const now = new Date(); // UTC time
         const createdAtUTC = now.toISOString(); // Store UTC time
-        
-        // Format the local time directly (assuming server is running in IST timezone)
+
+        // Convert to IST (UTC+5:30)
+        const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in ms
+        const nowIST = new Date(now.getTime() + istOffset);
         const pad = n => n.toString().padStart(2, '0');
-        const createdAtIST = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        const createdAtIST = `${nowIST.getFullYear()}-${pad(nowIST.getMonth() + 1)}-${pad(nowIST.getDate())} ${pad(nowIST.getHours())}:${pad(nowIST.getMinutes())}:${pad(nowIST.getSeconds())}`;
         
         const expenseData = {
             type,
