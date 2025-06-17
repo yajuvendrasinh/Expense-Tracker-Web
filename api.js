@@ -190,6 +190,7 @@ function resetForm() {
     if (typeof expenseNameInput !== 'undefined') {
         expenseNameInput.value = '';
         expenseNameInput.blur();
+        expenseNameInput.placeholder = 'Expense name';
     }
     updateDisplay();
 }
